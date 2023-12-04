@@ -1,0 +1,23 @@
+parameters:
+- name: artifactName
+  type: string
+
+steps:
+- pwsh: az bicep build -f $(System.DefaultWorkingDirectory)/infra/deploy.bicep
+  displayName: 'Build bicep'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    sourceFolder: $(System.DefaultWorkingDirectory)
+    contents: |
+      infra/**/*.json
+    targetFolder: $(Build.ArtifactStagingDirectory)
+    overWrite: true
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publishing artifact to pipeline'
+  inputs:
+    targetPath: $(Build.ArtifactStagingDirectory)
+    artifact: ${{ parameters.artifactName }}
+    publishLocation: 'pipeline'

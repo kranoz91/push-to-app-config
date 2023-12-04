@@ -1,0 +1,24 @@
+parameters:
+- name: azureResourceManagerConnection
+  type: string
+
+- name: configstoreName
+  type: string
+
+- name: environment
+  type: string
+
+steps:
+- task: FileTransform@2
+  inputs:
+    folderPath: '$(System.DefaultWorkingDirectory)/build/config'
+    jsonTargetFiles: '${{ parameters.environment }}-app-config.json'
+
+- task: AzureAppConfigurationPush@1
+  inputs:
+    azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+    ConfigstoreName: ${{ parameters.configstoreName }}
+    ConfigurationFile: 'build/config/${{ parameters.environment }}-app-config.json'
+    Separator: ':'
+    Label: ${{ parameters.environment }}
+    Strict: true

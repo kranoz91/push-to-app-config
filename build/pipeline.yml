@@ -1,0 +1,53 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  artifactName: 'drop'
+  azureResourceManagerConnection: 'ARMDeployment' # This needs to updated based on what name your Service Connection has in Azure DevOps.
+  resourceGroupName: 'rg-PushSettings-PoC'
+  location: 'West Europe'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildBicep
+    displayName: 'Building Bicep'
+    steps:
+    - template: tasks/steps-build.yml
+      parameters:
+        artifactName: ${{ variables.artifactName }}
+- stage: Deploy
+  jobs:
+  - deployment: JobA
+    displayName: 'Provision Infrastructure to Development'
+    environment: Development
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: tasks/steps-provision.yml
+            parameters:
+              azureResourceManagerConnection: ${{ variables.azureResourceManagerConnection }}
+              resourceGroupName: ${{ variables.resourceGroupName }}
+              location: ${{ variables.location }}
+              artifactName: ${{ variables.artifactName }}
+  - job: JobB
+    displayName: 'Push Settings to App Configuration'
+    dependsOn: JobA
+    pool:
+      vmImage: 'windows-latest'
+    variables:
+      root.variableA: $[ dependencies.JobA.outputs['JobA.OutputVariables.variableA'] ]
+      configstoreName: $[ dependencies.JobA.outputs['JobA.OutputVariables.configstoreName'] ]
+    steps:
+    - template: tasks/steps-push-settings.yml
+      parameters:
+        azureResourceManagerConnection: ${{ variables.azureResourceManagerConnection }}
+        configstoreName: ${{ variables.configstoreName }}
+        environment: 'Development'
