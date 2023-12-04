@@ -23,6 +23,7 @@ stages:
       parameters:
         artifactName: ${{ variables.artifactName }}
 - stage: Deploy
+  dependsOn: Build
   jobs:
   - deployment: JobA
     displayName: 'Provision Infrastructure to Development'
