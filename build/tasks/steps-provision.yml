@@ -25,7 +25,5 @@ steps:
     deploymentName: $(Build.BuildNumber)
     deploymentOutputs: 'deploymentOutputs'
 
-- script: |
-    echo "##vso[task.setvariable variable=variableA;isOutput=true;]"$(deploymentOutputs.variableA.value)""
-    echo "##vso[task.setvariable variable=configstoreName;isOutput=true;]"$(deploymentOutputs.configstoreName.value)""
+- script: echo "##vso[task.setvariable variable=variableA;isOutput=true;]"$(deploymentOutputs.variableA.value)""
   name: OutputVariables

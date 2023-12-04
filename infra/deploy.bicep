@@ -13,4 +13,3 @@ resource appConfig 'Microsoft.AppConfiguration/configurationStores@2022-05-01' =
 }
 
 output variableA string = 'someValue'
-output configstoreName string = configstoreName

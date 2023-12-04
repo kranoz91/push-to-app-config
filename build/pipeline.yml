@@ -45,7 +45,7 @@ stages:
       vmImage: 'windows-latest'
     variables:
       root.variableA: $[ dependencies.JobA.outputs['JobA.OutputVariables.variableA'] ]
-      configstoreName: $[ dependencies.JobA.outputs['JobA.OutputVariables.configstoreName'] ]
+      configstoreName: appcs-pushsettings-poc
     steps:
     - template: tasks/steps-push-settings.yml
       parameters:

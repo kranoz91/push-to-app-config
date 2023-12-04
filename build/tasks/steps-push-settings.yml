@@ -17,8 +17,9 @@ steps:
 - task: AzureAppConfigurationPush@6
   inputs:
     azureSubscription: ${{ parameters.azureResourceManagerConnection }}
-    ConfigstoreName: ${{ parameters.configstoreName }}
+    AppConfigurationEndpoint: 'https://${{ parameters.configstoreName }}.azconfig.io'
     ConfigurationFile: 'build/config/${{ parameters.environment }}-app-config.json'
     Separator: ':'
     Label: ${{ parameters.environment }}
-    Strict: true
+    Strict: false
+    ImportMode: 'All'
