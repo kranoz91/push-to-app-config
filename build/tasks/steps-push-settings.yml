@@ -14,7 +14,7 @@ steps:
     folderPath: '$(System.DefaultWorkingDirectory)/build/config'
     jsonTargetFiles: '${{ parameters.environment }}-app-config.json'
 
-- task: AzureAppConfigurationPush@1
+- task: AzureAppConfigurationPush@6
   inputs:
     azureSubscription: ${{ parameters.azureResourceManagerConnection }}
     ConfigstoreName: ${{ parameters.configstoreName }}
